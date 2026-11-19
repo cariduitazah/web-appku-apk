@@ -7,9 +7,11 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.7.2'
-        // HAPUS BARIS GOOGLE SERVICES DI SINI JIKA ADA
     }
 }
+
+// BARIS INI SANGAT PENTING! (Menghubungkan ke variabel SDK)
+apply from: "variables.gradle"
 
 allprojects {
     repositories {
