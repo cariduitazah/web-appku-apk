@@ -37,12 +37,12 @@ jobs:
           yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
           yes | $ANDROID_HOME/cmdline-tools/bin/sdkmanager --licenses || true
 
-      - name: Build APK dengan Gradle
+            - name: Build APK dengan Gradle
         run: |
           cd android
           chmod +x gradlew
+          ./gradlew clean          # <--- TAMBAHKAN BARIS INI (untuk hapus cache lama)
           ./gradlew assembleDebug --no-daemon
-
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
