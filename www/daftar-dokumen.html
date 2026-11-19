@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daftar - archive Dzikir</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="assets/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/all.min.css">
+<script src="assets/js/tinymce/tinymce.min.js" ></script>
+		<script src="html2pdf.bundle.min.js"></script>
+<style>
+
+</style>
+</head>
+<body>
+<!-- SIDEBAR FULL TOP -->
+<aside id="sidebar">
+  <div class="sidebar-top">
+    <img class="avatar" src="assets/img/me3.png" alt="Aby Khan">
+    <div class="profile-name">DOKUMENTASI</div>
+    <div class="profile-role">Dzikir & Do'a</div>
+  </div>
+  <nav class="sidebar-menu">
+    <a class="menu-item" href="index.html">
+      <i class="fas fa-laptop-house" style=""></i>
+      Beranda
+    </a>
+    <a class="menu-item active" href="daftar-dokumen.html">
+      <i class="fas fa-book-reader"></i>
+      Document
+    </a>
+    <div class="menu-item" id="settingToggle">
+       <i class="fas fa-edit" style=""></i>
+      Editor
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="submenu" id="settingSubmenu">
+      <a href="kategori.html">Kategori</a>
+      <a href="subkategori.html">Subkategori</a>
+      <a href="artikel.html">Artikel</a>
+    </div>
+  </nav>
+    <div class="sidebar-bottom">
+    <img class="avatar-btm" src="assets/img/me.png" alt="Aby Khan">
+    <div class="profile-name-btm">Aby kandyas</div>
+    <div class="profile-role-btm">Administrator</div>
+  </div>
+</aside>
+<div id="backdrop"></div>
+<!-- MAIN -->
+<div id="main">
+  <header id="navbar">
+    <div class="navbar-left">
+      <div class="hamburger" id="hamburgerBtn" title="Toggle sidebar">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </div>
+      <div class="company-name"><img style="padding-top:8px;" src="assets/img/dzikir.png" alt="Aby Khan"></div>
+    </div>
+    <div class="navbar-right">
+      <div class="icon-btn" id="searchBtn" title="Search">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="6"/><path d="M21 21l-4.3-4.3"/></svg>
+      </div>
+      <div class="icon-btn" id="moreBtn" title="More">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+      </div>
+    </div>
+    <!-- SEARCH OVERLAY MENUTUPI NAVBAR -->
+    <div id="searchOverlay">
+      <input id="searchInput" type="text" placeholder="Ketik untuk mencari...">
+      <div class="close-search" id="closeSearch">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </div>
+    </div>
+    <!-- DROPDOWN NAVBAR KANAN -->
+    <div id="navDropdown">
+      <a href="#" class="active">Nama Thema</a>
+      <a href="#">Nama Thema</a>
+      <a href="#">Nama Thema</a>
+      <a href="#">Nama Thema</a>
+      <a href="#">Nama Thema</a>
+    </div>
+  </header>
+  <div class="content">
+    <h1>Daftar Dokumen</h1>
+    <div class="card">
+      <ul id="pohon" style="padding:0;margin:0"></ul>
+    </div>
+  </div>
+</div>
+
+<script>
+// === FUNGSI FORMAT TANGGAL: 2026-10-14 → "14 Oct 2026" ===
+function formatTanggal(tglString) {
+  if (!tglString) return '-';
+  const bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
+  const [thn, bln, tgl] = tglString.split('-').map(Number);
+  return `${tgl} ${bulan[bln - 1]} ${thn}`;
+}
+
+// UI Control
+const sidebar = document.getElementById('sidebar');
+const main = document.getElementById('main');
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const backdrop = document.getElementById('backdrop');
+const settingToggle = document.getElementById('settingToggle');
+const settingSubmenu = document.getElementById('settingSubmenu');
+const searchBtn = document.getElementById('searchBtn');
+const searchOverlay = document.getElementById('searchOverlay');
+const closeSearch = document.getElementById('closeSearch');
+const searchInput = document.getElementById('searchInput');
+const moreBtn = document.getElementById('moreBtn');
+const navDropdown = document.getElementById('navDropdown');
+
+function isMobile(){return window.innerWidth<=768}
+hamburgerBtn.addEventListener('click', ()=>{
+  if(isMobile()){sidebar.classList.toggle('mobile-open');backdrop.classList.toggle('show',sidebar.classList.contains('mobile-open'))}
+  else{const c=sidebar.classList.toggle('collapsed');main.classList.toggle('full',c)}
+});
+backdrop.addEventListener('click', ()=>{sidebar.classList.remove('mobile-open');backdrop.classList.remove('show')});
+settingToggle.addEventListener('click', ()=>{settingToggle.classList.toggle('open');settingSubmenu.classList.toggle('open')});
+// === Pencarian yang mengarah ke Index ===
+searchBtn.addEventListener('click', () => {
+  searchOverlay.classList.add('open');
+  setTimeout(() => searchInput.focus(), 100);
+});
+
+closeSearch.addEventListener('click', () => {
+  searchOverlay.classList.remove('open');
+  searchInput.value = '';
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    searchOverlay.classList.remove('open');
+    searchInput.value = '';
+  }
+});
+
+// Saat mengetik & tekan Enter → pindah ke index dengan kata kunci
+searchInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const kata = searchInput.value.trim();
+    if (kata) {
+      // Langsung buka index + kirim kata kunci
+      window.location.href = `index.html?cari=${encodeURIComponent(kata)}`;
+    }
+  }
+});
+
+moreBtn.addEventListener('click',e=>{e.stopPropagation();navDropdown.classList.toggle('show')});
+document.addEventListener('click',()=>navDropdown.classList.remove('show'));
+navDropdown.addEventListener('click',e=>e.stopPropagation());
+
+// Database
+if (!window.db) {
+  window.db = {
+    baca: async function(nama) {
+      try {
+        return await window.electronAPI.bacaData(nama) || [];
+      } catch {
+        return [];
+      }
+    },
+    tulis: async function(nama, isi) {
+      try {
+        return await window.electronAPI.tulisData(nama, isi);
+      } catch {
+        return { sukses: false };
+      }
+    }
+  };
+}
+
+
+// Treeview Logic
+let semuaKategori=[], semuaSub=[], semuaArt=[];
+
+async function muatSemua(){
+  [semuaKategori, semuaSub, semuaArt] = await Promise.all([
+    window.db.baca('kategori'),
+    window.db.baca('subkategori'),
+    window.db.baca('artikel')
+  ]);
+  tampilkanPohon();
+}
+
+function tampilkanPohon(){
+  const wadah = document.getElementById('pohon');
+  wadah.innerHTML = semuaKategori.map(kat=>{
+    const subDariKat = semuaSub.filter(s=>s.id_kat===kat.id);
+    return `
+      <li class="tree-item">
+        <div class="tree-toggle" onclick="toggleSaya(this)">
+          <span class="tree-icon">▶</span>
+          <span class="tree-nama"><i class="fa-solid fa-folder-open" style="color:#fe8606;"></i> ${kat.nama}</span>
+        </div>
+        <ul class="tree-kelompok tree-sembunyi" style="padding-left:20px;list-style:none">
+          ${subDariKat.length===0
+            ? '<li style="padding:6px 8px;color:#94a3b8;font-size:14px">Belum ada subkategori</li>'
+            : subDariKat.map(sub=>{
+                const artDariSub = semuaArt.filter(a=>a.id_sub===sub.id);
+                return `
+                  <li class="tree-item">
+                    <div class="tree-toggle" onclick="toggleSaya(this)">
+                      <span class="tree-icon">▶</span>
+                      <span class="tree-nama">📂 ${sub.nama}</span>
+                    </div>
+                    <ul class="tree-kelompok tree-sembunyi" style="padding-left:20px;list-style:none">
+                      ${artDariSub.length===0
+                        ? '<li style="padding:6px 8px;color:#94a3b8;font-size:14px">Belum ada artikel</li>'
+                        : artDariSub.map(art=>`
+                            <li class="tree-item">
+                              <div class="tree-artikel" onclick="bukaArtikel(${art.id}, this)">
+                                📄 ${art.judul}
+                              </div>
+                            </li>
+                          `).join('')
+                      }
+                    </ul>
+                  </li>
+                `;
+              }).join('')
+          }
+        </ul>
+      </li>
+    `;
+  }).join('');
+}
+
+function toggleSaya(el){
+  const ikon = el.querySelector('.tree-icon');
+  const isi = el.nextElementSibling;
+  ikon.classList.toggle('buka');
+  isi.classList.toggle('tree-sembunyi');
+}
+
+function bukaArtikel(id, el){
+  document.querySelectorAll('.tree-artikel').forEach(i=>i.classList.remove('aktif'));
+  el.classList.add('aktif');
+  setTimeout(()=>location.href=`detail.html?id=${id}`, 200);
+}
+
+window.addEventListener('resize',()=>{if(!isMobile()){sidebar.classList.remove('mobile-open');backdrop.classList.remove('show')}});
+
+muatSemua();
+</script>
+</body>
+</html>

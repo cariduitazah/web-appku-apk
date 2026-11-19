@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Detail - archive Dzikir</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="assets/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/all.min.css">
+<script src="assets/tinymce/tinymce.min.js" ></script>
+		<script src="html2pdf.bundle.min.js"></script>
+<style>
+
+</style>
+</head>
+<body>
+<!-- SIDEBAR FULL TOP -->
+<aside id="sidebar">
+  <div class="sidebar-top">
+    <img class="avatar" src="assets/img/me3.png" alt="Aby Khan">
+    <div class="profile-name">DOKUMENTASI</div>
+    <div class="profile-role">Dzikir & Do'a</div>
+  </div>
+  <nav class="sidebar-menu">
+    <a class="menu-item active" href="index.html">
+      <i class="fas fa-laptop-house" style=""></i>
+      Beranda
+    </a>
+    <a class="menu-item" href="daftar-dokumen.html">
+      <i class="fas fa-book-reader"></i>
+      Document
+    </a>
+    <div class="menu-item" id="settingToggle">
+       <i class="fas fa-edit" style=""></i>
+      Editor
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="submenu" id="settingSubmenu">
+      <a href="kategori.html">Kategori</a>
+      <a href="subkategori.html">Subkategori</a>
+      <a href="artikel.html">Artikel</a>
+    </div>
+  </nav>
+  <div class="sidebar-bottom">
+    <img class="avatar-btm" src="assets/img/me.png" alt="Aby Khan">
+    <div class="profile-name-btm">Aby kandyas</div>
+    <div class="profile-role-btm">Administrator</div>
+  </div>
+</aside>
+<div id="backdrop"></div>
+<!-- MAIN -->
+<div id="main">
+  <header id="navbar">
+    <div class="navbar-left">
+      <div class="hamburger" id="hamburgerBtn">
+       <i class="fab fa-windows" style="font-size: 25px;"></i>
+      </div>
+      <div class="company-name ">DZIKIR & DO'A</div>
+    </div>
+    <div class="navbar-right">
+      <div class="icon-btn" id="copyBtn" title="Salin Artikel" style="font-size:22px;color:#fff" title="Salin"><i class="fas fa-light fa-copy"></i></div>
+      <div class="icon-btn" id="pdfBtn" title="Ekspor PDF" style="color:#fff" title="PDF"><i class="far fa-file-pdf" style="font-size:22px;"></i></div>
+      <div class="icon-btn" id="backBtn" title="Kembali" style="color:#fff"><i class="fas fa-reply" style=""></i></div>
+    </div>
+  </header>
+  <div class="content">
+    <div id="areaCetak" class="card">
+     
+	  
+	  <!--profile----->
+    <div class="profile2">
+                        <!--img---->
+      <div class="profile2-img">
+         <img src="assets/img/me.png" />
+           </div>
+                        <!--name-and-username-->
+           <div class="name-user">
+            <strong><h3 id="judulArt" style="color:#5008a3;"></h3></strong>
+           <span id="metaArt" style="font-size:12px;color:green;"></span>
+                        </div>
+                    </div>
+					<br>
+	  <div id="isiArt" style="line-height:1.5;font-size:16px;color:#333">
+	  </div>
+	  
+    </div>
+	
+	
+	
+  </div>
+  
+  
+  
+</div>
+
+<script>
+// === FUNGSI FORMAT TANGGAL: 2026-10-14 → "14 Oct 2026" ===
+function formatTanggal(tglString) {
+  if (!tglString) return '-';
+  const bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
+  const [thn, bln, tgl] = tglString.split('-').map(Number);
+  return `${tgl} ${bulan[bln - 1]} ${thn}`;
+}
+
+// UI Control
+const sidebar = document.getElementById('sidebar');
+const main = document.getElementById('main');
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const backdrop = document.getElementById('backdrop');
+const settingToggle = document.getElementById('settingToggle');
+const settingSubmenu = document.getElementById('settingSubmenu');
+const copyBtn = document.getElementById('copyBtn');
+const pdfBtn = document.getElementById('pdfBtn');
+const backBtn = document.getElementById('backBtn');
+
+function isMobile(){return window.innerWidth<=768}
+hamburgerBtn.addEventListener('click', ()=>{
+  if(isMobile()){sidebar.classList.toggle('mobile-open');backdrop.classList.toggle('show',sidebar.classList.contains('mobile-open'))}
+  else{const c=sidebar.classList.toggle('collapsed');main.classList.toggle('full',c)}
+});
+backdrop.addEventListener('click', ()=>{sidebar.classList.remove('mobile-open');backdrop.classList.remove('show')});
+settingToggle.addEventListener('click', ()=>{settingToggle.classList.toggle('open');settingSubmenu.classList.toggle('open')});
+backBtn.addEventListener('click', ()=>history.back());
+
+// Database
+if (!window.db) {
+  window.db = {
+    baca: async function(nama) {
+      try {
+        return await window.electronAPI.bacaData(nama) || [];
+      } catch {
+        return [];
+      }
+    },
+    tulis: async function(nama, isi) {
+      try {
+        return await window.electronAPI.tulisData(nama, isi);
+      } catch {
+        return { sukses: false };
+      }
+    }
+  };
+}
+
+
+// Ambil ID dari URL
+const idArtikel = parseInt(new URLSearchParams(location.search).get('id'));
+let semuaArt=[], semuaSub=[], semuaKat=[];
+
+async function muat(){
+  [semuaArt, semuaSub, semuaKat] = await Promise.all([
+    window.db.baca('artikel'),
+    window.db.baca('subkategori'),
+    window.db.baca('kategori')
+  ]);
+  const art = semuaArt.find(a=>a.id===idArtikel);
+  if(!art){
+    document.querySelector('.content').innerHTML='<p style="text-align:center;padding:50px">Artikel tidak ditemukan</p>';
+    return;
+  }
+  const sub = semuaSub.find(s=>s.id===art.id_sub);
+  const kat = sub ? semuaKat.find(k=>k.id===sub.id_kat) : null;
+
+  document.getElementById('judulArt').textContent = art.judul;
+  document.getElementById('metaArt').textContent = 
+  `📅 ${formatTanggal(art.tgl)} | 📂 ${kat?.nama||'-'} → ${sub?.nama||'-'}`;
+
+  document.getElementById('isiArt').innerHTML = art.isi;
+}
+
+// Salin
+copyBtn.addEventListener('click', async ()=>{
+  const teks = document.getElementById('judulArt').textContent + '\n' +
+                document.getElementById('metaArt').textContent + '\n\n' +
+                document.getElementById('isiArt').innerText;
+  await navigator.clipboard.writeText(teks);
+  copyBtn.textContent='✅ Tersalin';
+  setTimeout(()=>copyBtn.textContent='📋', 2000);
+});
+
+// Ekspor PDF
+pdfBtn.addEventListener('click', async ()=>{
+  const el = document.getElementById('areaCetak');
+  const opt = {
+    margin: 15,
+    filename: document.getElementById('judulArt').textContent + '.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+  };
+  await html2pdf().set(opt).from(el).save();
+});
+
+window.addEventListener('resize',()=>{if(!isMobile()){sidebar.classList.remove('mobile-open');backdrop.classList.remove('show')}});
+muat();
+</script>
+</body>
+</html>

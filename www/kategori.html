@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kategori - archive Dzikir</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="assets/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/all.min.css">
+
+<style>
+
+</style>
+</head>
+<body>
+<!-- SIDEBAR FULL TOP -->
+<aside id="sidebar">
+  <div class="sidebar-top">
+    <img class="avatar" src="assets/img/me3.png" alt="Aby Khan">
+    <div class="profile-name">DOKUMENTASI</div>
+    <div class="profile-role">Dzikir & Do'a</div>
+  </div>
+  <nav class="sidebar-menu">
+    <a class="menu-item" href="index.html">
+      <i class="fas fa-laptop-house" style=""></i>
+      Beranda
+    </a>
+    <a class="menu-item" href="daftar-dokumen.html">
+      <i class="fas fa-book-reader"></i>
+      Document
+    </a>
+    <div class="menu-item" id="settingToggle">
+       <i class="fas fa-edit" style=""></i>
+      Editor
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="submenu" id="settingSubmenu">
+      <a href="kategori.html">Kategori</a>
+      <a href="subkategori.html">Subkategori</a>
+      <a href="artikel.html">Artikel</a>
+    </div>
+  </nav>
+    <div class="sidebar-bottom">
+    <img class="avatar-btm" src="assets/img/me.png" alt="Aby Khan">
+    <div class="profile-name-btm">Aby kandyas</div>
+    <div class="profile-role-btm">Administrator</div>
+  </div>
+</aside>
+<div id="backdrop"></div>
+<!-- MAIN -->
+<div id="main">
+  <header id="navbar">
+    <div class="navbar-left">
+      <div class="hamburger" id="hamburgerBtn" title="Toggle sidebar">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </div>
+      <div class="company-name"><img style="padding-top:8px;" src="assets/img/dzikir.png" alt="Aby Khan"></div>
+    </div>
+    <div class="navbar-right">
+      <div class="icon-btn" id="searchBtn" title="Search">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="6"/><path d="M21 21l-4.3-4.3"/></svg>
+      </div>
+      <div class="icon-btn" id="moreBtn" title="More">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+      </div>
+    </div>
+    <!-- SEARCH OVERLAY MENUTUPI NAVBAR -->
+    <div id="searchOverlay">
+      <input id="searchInput" type="text" placeholder="Ketik untuk mencari...">
+      <div class="close-search" id="closeSearch">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </div>
+    </div>
+    <!-- DROPDOWN NAVBAR KANAN -->
+    <div id="navDropdown">
+      <a href="#" class="active">Nama Thema</a>
+      <a href="#">Nama Thema</a>
+      <a href="#">Nama Thema</a>
+      <a href="#">Nama Thema</a>
+      <a href="#">Nama Thema</a>
+    </div>
+  </header>
+  <div class="content">
+    <h1>Manajemen Kategori</h1>
+
+    <form id="formKategori" class="card">
+      <input type="hidden" id="idKat">
+      <div>
+        <label>Nama Kategori:</label>
+        <input type="text" id="namaKat" required placeholder="Masukkan nama kategori">
+      </div>
+      <button type="submit" class="btn">Simpan</button>
+    </form>
+
+    <div  class="tbl-header">
+        <table cellpadding="0" cellspacing="0" border="0">
+          <thead><tr><th>ID</th><th>Nama Kategori</th><th>Aksi</th></tr></thead>
+      
+    </table>
+	 </div>
+	<div  class="tbl-content">
+        <table cellpadding="0" cellspacing="0" border="0">
+		<tbody id="daftarKategori"></tbody>
+		</table>
+  </div>
+</div>
+<script>
+// UI Control
+const sidebar = document.getElementById('sidebar');
+const main = document.getElementById('main');
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const backdrop = document.getElementById('backdrop');
+const settingToggle = document.getElementById('settingToggle');
+const settingSubmenu = document.getElementById('settingSubmenu');
+const searchBtn = document.getElementById('searchBtn');
+const searchOverlay = document.getElementById('searchOverlay');
+const closeSearch = document.getElementById('closeSearch');
+const moreBtn = document.getElementById('moreBtn');
+const navDropdown = document.getElementById('navDropdown');
+
+function isMobile(){return window.innerWidth<=768}
+hamburgerBtn.addEventListener('click', ()=>{
+  if(isMobile()){sidebar.classList.toggle('mobile-open');backdrop.classList.toggle('show',sidebar.classList.contains('mobile-open'))}
+  else{const c=sidebar.classList.toggle('collapsed');main.classList.toggle('full',c)}
+});
+backdrop.addEventListener('click', ()=>{sidebar.classList.remove('mobile-open');backdrop.classList.remove('show')});
+settingToggle.addEventListener('click', ()=>{settingToggle.classList.toggle('open');settingSubmenu.classList.toggle('open')});
+// === Pencarian yang mengarah ke Index ===
+searchBtn.addEventListener('click', () => {
+  searchOverlay.classList.add('open');
+  setTimeout(() => searchInput.focus(), 100);
+});
+
+closeSearch.addEventListener('click', () => {
+  searchOverlay.classList.remove('open');
+  searchInput.value = '';
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    searchOverlay.classList.remove('open');
+    searchInput.value = '';
+  }
+});
+
+// Saat mengetik & tekan Enter → pindah ke index dengan kata kunci
+searchInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const kata = searchInput.value.trim();
+    if (kata) {
+      // Langsung buka index + kirim kata kunci
+      window.location.href = `index.html?cari=${encodeURIComponent(kata)}`;
+    }
+  }
+});
+
+moreBtn.addEventListener('click',e=>{e.stopPropagation();navDropdown.classList.toggle('show')});
+document.addEventListener('click',()=>navDropdown.classList.remove('show'));
+navDropdown.addEventListener('click',e=>e.stopPropagation());
+
+// Database
+if (!window.db) {
+  window.db = {
+    baca: async function(nama) {
+      try {
+        return await window.electronAPI.bacaData(nama) || [];
+      } catch {
+        return [];
+      }
+    },
+    tulis: async function(nama, isi) {
+      try {
+        return await window.electronAPI.tulisData(nama, isi);
+      } catch {
+        return { sukses: false };
+      }
+    }
+  };
+}
+
+
+// Logic
+let daftar=[];
+const form=document.getElementById('formKategori');
+const tbody=document.getElementById('daftarKategori');
+
+async function muat(){
+  daftar=await window.db.baca('kategori');
+  render();
+}
+function render(){
+  tbody.innerHTML=daftar.map(k=>`
+    <tr>
+      <td>${k.id}</td>
+      <td>${k.nama}</td>
+      <td>
+        <button onclick="edit(${k.id})">Ubah</button>
+        <button onclick="hapus(${k.id})">Hapus</button>
+      </td>
+    </tr>`).join('');
+}
+form.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const id=document.getElementById('idKat').value;
+  const nama=document.getElementById('namaKat').value.trim();
+  if(!nama)return;
+  if(id){
+    const i=daftar.findIndex(x=>x.id==id);
+    daftar[i].nama=nama;
+  }else{
+    const idB=daftar.length?Math.max(...daftar.map(x=>x.id))+1:1;
+    daftar.push({id:idB,nama});
+  }
+  await window.db.tulis('kategori',daftar);
+  form.reset();muat();
+});
+window.edit=function(id){
+  const k=daftar.find(x=>x.id===id);
+  document.getElementById('idKat').value=k.id;
+  document.getElementById('namaKat').value=k.nama;
+};
+window.hapus=async function(id){
+  if(!confirm('Yakin hapus?'))return;
+  daftar=daftar.filter(x=>x.id!==id);
+  await window.db.tulis('kategori',daftar);muat();
+};
+window.addEventListener('resize',()=>{if(!isMobile()){sidebar.classList.remove('mobile-open');backdrop.classList.remove('show')}});
+muat();
+</script>
+<script id="rendered-js" >
+var el = document.querySelector('[data-module="sticky-table"]');
+
+var scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+
+var thead = el.querySelector('thead');
+
+var offset = el.getBoundingClientRect();
+
+
+// Make sure you throttle/debounce this
+window.addEventListener('scroll', function (event) {
+  var rect = el.getBoundingClientRect();
+
+  scrollPosition = document.documentElement.scrollTop || document.body.scrollTop;
+
+  if (rect.top < thead.offsetHeight) {
+    thead.style.width = rect.width + 'px';
+    thead.classList.add('thead--is-fixed');
+  } else
+  {
+    thead.classList.remove('thead--is-fixed');
+  }
+});
+//# sourceURL=pen.js
+  </script>
+</body>
+</html>

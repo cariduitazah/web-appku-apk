@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Dzikir-Doa</string>
+    <string name="title_activity_main">Dzikir-Doa</string>
+    <string name="package_name">com.addibaaj.app</string>
+    <string name="custom_url_scheme">com.addibaaj.app</string>
+</resources>

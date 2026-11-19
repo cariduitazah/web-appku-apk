@@ -1,0 +1,31 @@
+{
+  "name": "dzikir-doa",
+  "version": "1.0.0",
+  "description": "Archive Dzikir - Doa",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "com.archive.dzikir",
+    "productName": "Archive Dzikir",
+    "icon": "app-icon.ico",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!node_modules/**/*"
+    ],
+    "win": {
+      "target": "portable"
+    }
+  }
+}

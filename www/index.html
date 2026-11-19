@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beranda - archive Dzikir</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="assets/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/all.min.css">
+<script src="assets/js/tinymce/tinymce.min.js" ></script>
+		<script src="html2pdf.bundle.min.js"></script>
+<style>
+@font-face {
+  font-family: 'Amiri';
+  font-style: normal;
+  font-weight: 400;
+  src: url('assets/webfonts/amiri-regular.woff2') format('woff2'), /* Modern browsers */
+       url('assets/webfonts/amiri-regular.woff') format('woff');   /* Older browsers */
+}
+</style>
+</head>
+<body>
+<!-- SIDEBAR FULL TOP -->
+<aside id="sidebar">
+  <div class="sidebar-top">
+    <img class="avatar" src="assets/img/me3.png" alt="Aby Khan">
+    <div class="profile-name">DOKUMENTASI</div>
+    <div class="profile-role">Dzikir & Do'a</div>
+  </div>
+  <nav class="sidebar-menu">
+    <a class="menu-item active" href="index.html">
+      <i class="fas fa-laptop-house" style=""></i>
+      Beranda
+    </a>
+    <a class="menu-item" href="daftar-dokumen.html">
+      <i class="fas fa-book-reader"></i>
+      Document
+    </a>
+    <div class="menu-item" id="settingToggle">
+       <i class="fas fa-edit" style=""></i>
+      Editor
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="submenu" id="settingSubmenu">
+      <a href="kategori.html">Kategori</a>
+      <a href="subkategori.html">Subkategori</a>
+      <a href="artikel.html">Artikel</a>
+    </div>
+  </nav>
+    <div class="sidebar-bottom">
+    <img class="avatar-btm" src="assets/img/me.png" alt="Aby Khan">
+    <div class="profile-name-btm">Aby kandyas</div>
+    <div class="profile-role-btm">Administrator</div>
+  </div>
+</aside>
+<div id="backdrop"></div>
+<!-- MAIN -->
+<div id="main">
+  <header id="navbar">
+    <div class="navbar-left">
+      <div class="hamburger" id="hamburgerBtn" title="Toggle sidebar">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </div>
+      <div class="company-name"><img style="padding-top:8px;" src="assets/img/dzikir.png" alt="Aby Khan"></div>
+    </div>
+    <div class="navbar-right">
+      <div class="icon-btn" id="searchBtn" title="Search">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="6"/><path d="M21 21l-4.3-4.3"/></svg>
+      </div>
+      <div class="icon-btn" id="moreBtn" title="More">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+      </div>
+    </div>
+    <!-- SEARCH OVERLAY MENUTUPI NAVBAR -->
+    <div id="searchOverlay">
+      <input id="searchInput" type="text" placeholder="Ketik untuk mencari...">
+      <div class="close-search" id="closeSearch">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </div>
+    </div>
+    <!-- DROPDOWN NAVBAR KANAN -->
+    <div id="navDropdown">
+      <a href="#" class="active">Nama Thema</a>
+      <a href="#">Nama Thema</a>
+      <a href="#">Nama Thema</a>
+      <a href="#">Nama Thema</a>
+      <a href="#">Nama Thema</a>
+    </div>
+  </header>
+   <div class="content">
+    <h2><i class="far fa-folder-open" style="color:#9b9a9d;"></i> Daftar Artikel</h2>
+
+    <div class="card" style="padding:16px;margin-bottom:20px">
+      <label style="width:auto;margin-right:10px">Filter berdasarkan Kategori:</label>
+      <select id="filterKat" style="width:280px;padding:8px 12px" onchange="terapkanFilter()">
+        <option value="">-- Semua Kategori --</option>
+      </select>
+    </div>
+
+    <div id="infoCari">
+      <strong>Hasil pencarian:</strong> <span id="teksKata"></span>
+      <a href="#" onclick="resetCari();return false">Tampilkan Semua</a>
+    </div>
+
+<div class="card">
+    <div id="daftarArtikel"  >
+      <p style="text-align:center;padding:30px;color:#64748b">⏳ Memuat data...</p>
+    </div>
+    <div id="paginasi" class="paginasi"></div>
+	
+	
+  </div>
+</div>
+
+<script>
+// Elemen UI
+const sidebar = document.getElementById('sidebar');
+const main = document.getElementById('main');
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const backdrop = document.getElementById('backdrop');
+const settingToggle = document.getElementById('settingToggle');
+const settingSubmenu = document.getElementById('settingSubmenu');
+const searchBtn = document.getElementById('searchBtn');
+const searchOverlay = document.getElementById('searchOverlay');
+const closeSearch = document.getElementById('closeSearch');
+const searchInput = document.getElementById('searchInput');
+const moreBtn = document.getElementById('moreBtn');
+const navDropdown = document.getElementById('navDropdown');
+
+function isMobile(){return window.innerWidth<=768}
+
+// Toggle Sidebar
+hamburgerBtn.addEventListener('click', ()=>{
+  if(isMobile()){
+    sidebar.classList.toggle('mobile-open');
+    backdrop.classList.toggle('show', sidebar.classList.contains('mobile-open'));
+  }else{
+    const isCollapsed = sidebar.classList.toggle('collapsed');
+    main.classList.toggle('full', isCollapsed);
+  }
+});
+backdrop.addEventListener('click', ()=>{
+  sidebar.classList.remove('mobile-open');
+  backdrop.classList.remove('show');
+});
+
+// Toggle Submenu Editor
+settingToggle.addEventListener('click', ()=>{
+  settingToggle.classList.toggle('open');
+  settingSubmenu.classList.toggle('open');
+});
+
+// Search Overlay
+searchBtn.addEventListener('click', ()=>{
+  searchOverlay.classList.add('open');
+  setTimeout(()=>searchInput.focus(), 100);
+});
+closeSearch.addEventListener('click', ()=>{
+  searchOverlay.classList.remove('open');
+  resetCari();
+});
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape'){
+    searchOverlay.classList.remove('open');
+    resetCari();
+  }
+});
+
+// Dropdown Navbar
+moreBtn.addEventListener('click', e=>{
+  e.stopPropagation();
+  navDropdown.classList.toggle('show');
+});
+document.addEventListener('click', ()=>navDropdown.classList.remove('show'));
+navDropdown.addEventListener('click', e=>e.stopPropagation());
+
+// === FUNGSI FORMAT TANGGAL ===
+function formatTanggal(tglString){
+  if(!tglString) return '-';
+  const bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Ags','Sep','Okt','Nov','Des'];
+  const [thn, bln, tgl] = tglString.split('-').map(Number);
+  return `${tgl} ${bulan[bln - 1]} ${thn}`;
+}
+
+// Data & Logika
+let semuaArtikel = [], daftarKategori = [], daftarSubkategori = [];
+let filterKatTerpilih = '', kataKunci = '';
+const perHalaman = 5;
+let halamanSkrg = 1;
+
+async function muatSemua(){
+  [semuaArtikel, daftarKategori, daftarSubkategori] = await Promise.all([
+    window.db.baca('artikel'),
+    window.db.baca('kategori'),
+    window.db.baca('subkategori')
+  ]);
+  semuaArtikel.sort((a,b)=>b.tgl.localeCompare(a.tgl));
+
+  // Baca kata kunci dari URL
+  const params = new URLSearchParams(window.location.search);
+  const kataDariLink = params.get('cari');
+  if(kataDariLink){
+    kataKunci = kataDariLink;
+    searchInput.value = kataKunci;
+    history.replaceState({}, document.title, 'index.html');
+  }
+
+  isiPilihanKategori();
+  tampil();
+}
+
+function isiPilihanKategori(){
+  const sel = document.getElementById('filterKat');
+  sel.innerHTML = '<option value="">-- Semua Kategori --</option>'
+    + daftarKategori.map(k=>`<option value="${k.id}">${k.nama}</option>`).join('');
+}
+
+function terapkanFilter(){
+  filterKatTerpilih = document.getElementById('filterKat').value;
+  halamanSkrg = 1;
+  tampil();
+}
+
+function getNamaKategoriDariSub(id_sub){
+  const sub = daftarSubkategori.find(s=>s.id===id_sub);
+  if(!sub) return '-';
+  const kat = daftarKategori.find(k=>k.id===sub.id_kat);
+  return kat ? kat.nama : '-';
+}
+
+function dapatkanArtikelTerfilter(){
+  let hasil = semuaArtikel;
+  if(filterKatTerpilih){
+    const idKat = parseInt(filterKatTerpilih);
+    const idSubTerpilih = daftarSubkategori.filter(s=>s.id_kat===idKat).map(s=>s.id);
+    hasil = hasil.filter(a=>idSubTerpilih.includes(a.id_sub));
+  }
+  if(kataKunci){
+    const k = kataKunci.toLowerCase();
+    hasil = hasil.filter(a=>
+      a.judul.toLowerCase().includes(k) || a.isi.toLowerCase().includes(k)
+    );
+  }
+  return hasil;
+}
+
+function potongTeks(html, panjang=180){
+  const teks = html.replace(/<[^>]*>/g, '');
+  return teks.length>panjang ? teks.slice(0,panjang)+'...' : teks;
+}
+
+function tampil(){
+  const dataTerfilter = dapatkanArtikelTerfilter();
+  const mulai = (halamanSkrg-1)*perHalaman;
+  const dataHal = dataTerfilter.slice(mulai, mulai+perHalaman);
+  const div = document.getElementById('daftarArtikel');
+  const info = document.getElementById('infoCari');
+
+  if(kataKunci){
+    info.style.display = 'block';
+    document.getElementById('teksKata').textContent = `"${kataKunci}" — ${dataTerfilter.length} hasil ditemukan`;
+  }else{
+    info.style.display = 'none';
+  }
+
+  if(dataHal.length===0){
+    div.innerHTML = '<p style="text-align:center;color:#64748b;padding:20px">Tidak ada artikel yang cocok</p>';
+    document.getElementById('paginasi').innerHTML = '';
+    return;
+  }
+
+  div.innerHTML = dataHal.map(a=>`
+    
+	
+	
+      <h3><a href="detail.html?id=${a.id}" class="baca-selengkapnya"> ${a.judul}</a></h3>
+      
+     <div> ${potongTeks(a.isi)}</div>
+     
+   `).join('');
+
+  const totalHal = Math.ceil(dataTerfilter.length/perHalaman) || 1;
+  document.getElementById('paginasi').innerHTML = `
+    Halaman ${halamanSkrg} dari ${totalHal} &nbsp;
+    ${halamanSkrg>1 ? `<button onclick="gantiHal(${halamanSkrg-1})">← Sebelumnya</button>` : ''}
+    ${halamanSkrg<totalHal ? `<button onclick="gantiHal(${halamanSkrg+1})">Selanjutnya →</button>` : ''}
+  `;
+}
+
+window.gantiHal = function(hal){ halamanSkrg = hal; tampil(); };
+
+searchInput.addEventListener('input', e=>{
+  kataKunci = e.target.value.trim();
+  halamanSkrg = 1;
+  tampil();
+});
+
+window.resetCari = function(){
+  kataKunci = '';
+  searchInput.value = '';
+  halamanSkrg = 1;
+  tampil();
+};
+
+window.addEventListener('resize', ()=>{
+  if(!isMobile()){
+    sidebar.classList.remove('mobile-open');
+    backdrop.classList.remove('show');
+  }
+});
+
+// Pastikan db tersedia
+if (!window.db) {
+  window.db = {
+    baca: async function(nama) {
+      try {
+        return await window.electronAPI.bacaData(nama) || [];
+      } catch {
+        return [];
+      }
+    },
+    tulis: async function(nama, isi) {
+      try {
+        return await window.electronAPI.tulisData(nama, isi);
+      } catch {
+        return { sukses: false };
+      }
+    }
+  };
+}
+
+
+muatSemua();
+</script>
+</body>
+</html>

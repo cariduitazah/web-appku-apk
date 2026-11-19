@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subkategori - archive Dzikir</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="assets/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/all.min.css">
+
+<style>
+
+</style>
+</head>
+<body>
+<!-- SIDEBAR FULL TOP -->
+<aside id="sidebar">
+  <div class="sidebar-top">
+    <img class="avatar" src="assets/img/me3.png" alt="Aby Khan">
+    <div class="profile-name">DOKUMENTASI</div>
+    <div class="profile-role">Dzikir & Do'a</div>
+  </div>
+  <nav class="sidebar-menu">
+    <a class="menu-item" href="index.html">
+      <i class="fas fa-laptop-house" style=""></i>
+      Beranda
+    </a>
+    <a class="menu-item" href="daftar-dokumen.html">
+      <i class="fas fa-book-reader"></i>
+      Document
+    </a>
+    <div class="menu-item" id="settingToggle">
+       <i class="fas fa-edit" style=""></i>
+      Editor
+      <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="submenu" id="settingSubmenu">
+      <a href="kategori.html">Kategori</a>
+      <a href="subkategori.html">Subkategori</a>
+      <a href="artikel.html">Artikel</a>
+    </div>
+  </nav>
+    <div class="sidebar-bottom">
+    <img class="avatar-btm" src="assets/img/me.png" alt="Aby Khan">
+    <div class="profile-name-btm">Aby kandyas</div>
+    <div class="profile-role-btm">Administrator</div>
+  </div>
+</aside>
+<div id="backdrop"></div>
+<!-- MAIN -->
+<div id="main">
+  <header id="navbar">
+    <div class="navbar-left">
+      <div class="hamburger" id="hamburgerBtn" title="Toggle sidebar">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </div>
+      <div class="company-name"><img style="padding-top:8px;" src="assets/img/dzikir.png" alt="Aby Khan"></div>
+    </div>
+    <div class="navbar-right">
+      <div class="icon-btn" id="searchBtn" title="Search">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="6"/><path d="M21 21l-4.3-4.3"/></svg>
+      </div>
+      <div class="icon-btn" id="moreBtn" title="More">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg>
+      </div>
+    </div>
+    <!-- SEARCH OVERLAY MENUTUPI NAVBAR -->
+    <div id="searchOverlay">
+      <input id="searchInput" type="text" placeholder="Ketik untuk mencari...">
+      <div class="close-search" id="closeSearch">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </div>
+    </div>
+    <!-- DROPDOWN NAVBAR KANAN -->
+    <div id="navDropdown">
+      <a href="#" class="active">Nama Thema</a>
+      <a href="#">Nama Thema</a>
+      <a href="#">Nama Thema</a>
+      <a href="#">Nama Thema</a>
+      <a href="#">Nama Thema</a>
+    </div>
+  </header>
+  <div class="content">
+    <h2>Manajemen Subkategori</h2>
+
+    <form id="formSub" class="card">
+      <input type="hidden" id="idSub">
+      <div>
+        <label>Kategori Induk:</label>
+        <select id="idKatOpt" required>
+          <option value="">-- Pilih Kategori --</option>
+        </select>
+      </div>
+      <div>
+        <label>Nama Subkategori:</label>
+        <input type="text" id="namaSub" required placeholder="Masukkan nama subkategori">
+      </div>
+      <button type="submit" class="btn">Simpan</button>
+    </form>
+
+    <div  class="tbl-header">
+        <table cellpadding="0" cellspacing="0" border="0">
+      <thead><tr><th>ID Sub</th><th>Kategori</th><th>Nama Subkategori</th><th>Aksi</th></tr></thead>
+      
+    </table>
+	</div>
+	<div  class="tbl-content">
+        <table cellpadding="0" cellspacing="0" border="0">
+  <tbody id="daftarSub"></tbody>
+  </div>
+  </div>
+</div>
+
+<script>
+// UI Control
+const sidebar = document.getElementById('sidebar');
+const main = document.getElementById('main');
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const backdrop = document.getElementById('backdrop');
+const settingToggle = document.getElementById('settingToggle');
+const settingSubmenu = document.getElementById('settingSubmenu');
+const searchBtn = document.getElementById('searchBtn');
+const searchOverlay = document.getElementById('searchOverlay');
+const closeSearch = document.getElementById('closeSearch');
+const moreBtn = document.getElementById('moreBtn');
+const navDropdown = document.getElementById('navDropdown');
+
+function isMobile(){return window.innerWidth<=768}
+hamburgerBtn.addEventListener('click', ()=>{
+  if(isMobile()){sidebar.classList.toggle('mobile-open');backdrop.classList.toggle('show',sidebar.classList.contains('mobile-open'))}
+  else{const c=sidebar.classList.toggle('collapsed');main.classList.toggle('full',c)}
+});
+backdrop.addEventListener('click', ()=>{sidebar.classList.remove('mobile-open');backdrop.classList.remove('show')});
+settingToggle.addEventListener('click', ()=>{settingToggle.classList.toggle('open');settingSubmenu.classList.toggle('open')});
+// === Pencarian yang mengarah ke Index ===
+searchBtn.addEventListener('click', () => {
+  searchOverlay.classList.add('open');
+  setTimeout(() => searchInput.focus(), 100);
+});
+
+closeSearch.addEventListener('click', () => {
+  searchOverlay.classList.remove('open');
+  searchInput.value = '';
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    searchOverlay.classList.remove('open');
+    searchInput.value = '';
+  }
+});
+
+// Saat mengetik & tekan Enter → pindah ke index dengan kata kunci
+searchInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const kata = searchInput.value.trim();
+    if (kata) {
+      // Langsung buka index + kirim kata kunci
+      window.location.href = `index.html?cari=${encodeURIComponent(kata)}`;
+    }
+  }
+});
+
+moreBtn.addEventListener('click',e=>{e.stopPropagation();navDropdown.classList.toggle('show')});
+document.addEventListener('click',()=>navDropdown.classList.remove('show'));
+navDropdown.addEventListener('click',e=>e.stopPropagation());
+
+// Database
+if (!window.db) {
+  window.db = {
+    baca: async function(nama) {
+      try {
+        return await window.electronAPI.bacaData(nama) || [];
+      } catch {
+        return [];
+      }
+    },
+    tulis: async function(nama, isi) {
+      try {
+        return await window.electronAPI.tulisData(nama, isi);
+      } catch {
+        return { sukses: false };
+      }
+    }
+  };
+}
+
+
+// Logic
+let subList=[],katList=[];
+const form=document.getElementById('formSub');
+const tbody=document.getElementById('daftarSub');
+
+async function muatPilihan(){
+  katList=await window.db.baca('kategori');
+  const sel=document.getElementById('idKatOpt');
+  sel.innerHTML='<option value="">-- Pilih Kategori --</option>'
+    +katList.map(k=>`<option value="${k.id}">${k.nama}</option>`).join('');
+}
+async function muatSub(){
+  subList=await window.db.baca('subkategori');
+  render();
+}
+function render(){
+  tbody.innerHTML=subList.map(s=>{
+    const nmKat=katList.find(k=>k.id===s.id_kat)?.nama||'-';
+    return `<tr>
+      <td>${s.id}</td>
+      <td>${nmKat}</td>
+      <td>${s.nama}</td>
+      <td>
+        <button onclick="edit(${s.id})">Ubah</button>
+        <button onclick="hapus(${s.id})">Hapus</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+form.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const id=document.getElementById('idSub').value;
+  const id_kat=parseInt(document.getElementById('idKatOpt').value);
+  const nama=document.getElementById('namaSub').value.trim();
+  if(!id_kat||!nama)return;
+  if(id){
+    const i=subList.findIndex(x=>x.id==id);
+    subList[i]={...subList[i],id_kat,nama};
+  }else{
+    const idB=subList.length?Math.max(...subList.map(x=>x.id))+1:1;
+    subList.push({id:idB,id_kat,nama});
+  }
+  await window.db.tulis('subkategori',subList);
+  form.reset();muatPilihan();muatSub();
+});
+window.edit=function(id){
+  const s=subList.find(x=>x.id===id);
+  document.getElementById('idSub').value=s.id;
+  document.getElementById('idKatOpt').value=s.id_kat;
+  document.getElementById('namaSub').value=s.nama;
+};
+window.hapus=async function(id){
+  if(!confirm('Yakin hapus?'))return;
+  subList=subList.filter(x=>x.id!==id);
+  await window.db.tulis('subkategori',subList);muatSub();
+};
+window.addEventListener('resize',()=>{if(!isMobile()){sidebar.classList.remove('mobile-open');backdrop.classList.remove('show')}});
+muatPilihan();muatSub();
+</script>
+</body>
+</html>
