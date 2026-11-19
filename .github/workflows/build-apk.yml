@@ -17,14 +17,11 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Setup Java JDK (Untuk Android)
+      - name: Setup Java JDK
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
-
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
 
       - name: Install Dependencies
         run: npm install
@@ -38,7 +35,7 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      - name: Upload APK ke GitHub
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: APK-Hasil-Build
